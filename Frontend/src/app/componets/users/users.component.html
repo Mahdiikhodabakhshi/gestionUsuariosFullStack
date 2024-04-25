@@ -1,0 +1,266 @@
+<div class="container mt-5" style="margin-bottom: 4.9rem">
+
+  <div *ngIf="infoUsers">
+    <div class="row d-flex justify-content-center my-3">
+      <div class="col-md-offset-1 col-md-10">
+        <div class="panel">
+          <div class="panel-heading">
+            <div class="row d-flex justify-content-around my-3">
+              <div class="col-4 col-sm-3 col-xs-12">
+                <h4 class="title">Gestión Usuarios</h4>
+              </div>
+              <div class="col-4 col-sm-3">
+                <h5 class="newUser" (click)="newUser()"
+                    data-bs-toggle="modal"
+                    data-bs-target="#miModal"
+                ><fa-icon [icon]="faCirclePlus"></fa-icon> Crear nuevo usuario
+                </h5>
+              </div>
+              <div class="col-sm-3 col-xs-12  d-flex justify-content-center ">
+                <button type="button" class="btn btn-primary form-control" data-bs-toggle="modal" data-bs-target="#filterModal">
+                  Filters
+                </button>
+                <button (click)="refreshPage()" type="button" class="btn btn-primary form-control" style="width: 2.7rem ;margin-left: 10px"><fa-icon [icon]="faRefresh"></fa-icon></button>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body table-responsive">
+            <table class="table table-dark table-striped text-center">
+              <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Apellidos</th>
+                <th scope="col">Email</th>
+                <th scope="col">Rol</th>
+                <th scope="col">Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let user of infoUsers">
+                <td>{{user.id}}</td>
+                <td>{{user.name}}</td>
+                <td>{{user.lastName}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.userType}}</td>
+                <td>
+
+                  <ul class="action-list">
+                    <li><a (click)="loadUser(user)" data-bs-toggle="modal"
+                           data-bs-target="#miModal" data-tip="edit" class="text-success"><fa-icon [icon]="faEdit" ></fa-icon></a></li>
+                    <li><a data-bs-toggle="modal" data-bs-target="#deleteConfirmation" (click)="prepareItemToDelete(user.id)"  data-tip="delete" class="text-danger"><fa-icon [icon]="faTrash"></fa-icon></a></li>
+<!--                    (click)="deleteUser(user.id)"-->
+                  </ul>
+                </td>
+              </tr>
+
+              </tbody>
+            </table>
+          </div>
+          <div class="panel-footer">
+            <div class="row  ">
+                          <div class="col col-sm-6 col-xs-6">Page <b>{{page + 1}}</b> out of <b>{{totalPages}}</b> entries</div>
+                          <div class="col-sm-6 col-xs-6 d-flex justify-content-end">
+                            <ul class="pagination hidden-xs pull-right">
+                              <li><button [disabled]="first" class="button-82-pushable" role="button" (click)="toPreviosPage()">
+                                <span class="button-82-shadow"></span>
+                                <span class="button-82-edge button-82-edge-pre"></span>
+                                <span class="button-82-front btn-color-pre text">
+                                  Previous
+                                </span>
+                              </button></li>
+
+
+                              <li class="active" style="margin: 1px 15px"> {{page + 1}} </li>
+
+                              <li><button [disabled]="last" class="button-82-pushable" role="button" (click)="toNextPage()">
+                                <span class="button-82-shadow"></span>
+                                <span class="button-82-edge button-82-edge-next"></span>
+                                <span class="button-82-front btn-color-next text" style="padding: 1px 15px">
+                                  Next
+                                </span>
+                              </button></li>
+                            </ul>
+
+                          </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!--  no data -->
+  <div *ngIf="!infoUsers" style="margin-bottom: 26.5rem">
+    <div class="row d-flex justify-content-center my-3" >
+      <div class="col text-center">
+        <h2>User List is <span class="text-danger text-uppercase ">empty</span> .</h2>
+        <h4><span class="text-success text-capitalize">add </span> new User!</h4>
+        <a class="newUser" (click)="newUser()"
+           data-bs-toggle="modal"
+           data-bs-target="#miModal" ><fa-icon [icon]="faCirclePlus" ></fa-icon></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- delete Modal -->
+  <div class="modal fade" id="deleteConfirmation" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="deleteModalLabel">Confirmación de borrado</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+         ¿Desea eliminar el registro seleccionado?
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" (click)="deleteUser()" data-bs-dismiss="modal" class="btn btn-primary">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!--  modal del busqueda -->
+  <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Filtros</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-floating mb-3">
+            <input class="form-control" type="text" [(ngModel)]="nameFilter" name="Nombre" id="Nombre" placeholder="Nombre">
+            <label for="Nombre">Por Nombre</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input class="form-control" type="text" [(ngModel)]="lastNameFilter" name="apellidos" id="apellidos" placeholder="apellidos">
+            <label for="apellidos">Por Apellidos</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input class="form-control" type="text" [(ngModel)]="roleFilter" name="role" id="role" placeholder="role">
+            <label for="role">Por rol</label>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" (click)="searchByFilters()">Buscar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  modal del busqueda -->
+
+
+
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="miModal"
+       tabindex="-1" aria-labelledby="miModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-nombre" id="miModalLabel">
+            {{editar? 'Actualizar usuario':'nuevo usuario'}}</h5>
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+
+        </div>
+        <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+          <div class="modal-body">
+            <div class="form-floating mb-3" *ngIf="editar"  disabled>
+              <input formControlName="id"
+                     type="text" class="form-control"
+                     id="id" value="{{id}}"
+                     placeholder="id">
+              <label for="id">
+                id</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input formControlName="name"
+                     type="text" class="form-control"
+                     id="name" value="{{name}}"
+                     placeholder="nombre">
+              <label for="name">
+                nombre</label>
+              <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-warning" role="alert">
+                <div *ngIf="name.errors?.['required'] ">
+                  Nombre es obligatorio
+                </div>
+                <div *ngIf="name.errors?.['maxlength']">
+                  tiene que tener maximo 100 caracteres
+                </div>
+              </div>
+            </div>
+            <div class="form-floating mb-3">
+              <input formControlName="lastName"
+                     type="text" class="form-control"
+                     id="lastName" value="{{lastName}}"
+                     placeholder="apellidos">
+              <label for="lastName">
+                apellidos</label>
+              <div *ngIf="lastName.invalid  && (lastName.dirty || lastName.touched)" class="alert alert-warning" role="alert">
+                <div *ngIf="lastName.errors?.['required'] ">
+                  Appelido es obligatorio
+                </div>
+              </div>
+            </div>
+            <div class="form-floating mb-3">
+              <input formControlName="email"
+                     type="text" class="form-control"
+                     id="email" value="{{email}}"
+                     placeholder="Correo">
+              <label for="email">
+                Correo</label>
+              <div *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-warning" role="alert">
+                <div *ngIf="email.errors?.['required'] ">
+                  email es obligatorio
+                </div>
+                <div *ngIf="email.errors?.['email'] ">
+                  el formato del correo no esta correcto
+                </div>
+
+                <div *ngIf="email.errors?.['maxlength']">
+                  tiene que tener maximo 200 caracteres
+                </div>
+              </div>
+            </div>
+
+
+            <!-- select categoria -->
+            <div >
+              <label for="Select">Role</label>
+              <select class="form-select" id="Select"
+                      aria-label="userType"
+                      formControlName="userType">
+                <option value="ADMINISTRATOR">
+                  ADMINISTRATOR</option>
+                <option value="CONTRIBUTOR">
+                  CONTRIBUTOR</option>
+              </select>
+            </div>
+
+
+
+
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary"
+                    data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary"
+                    data-bs-dismiss="modal" [disabled]="userForm.invalid" >Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

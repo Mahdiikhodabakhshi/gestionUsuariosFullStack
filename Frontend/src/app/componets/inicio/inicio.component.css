@@ -1,0 +1,14 @@
+.inicioItem{
+  transition: all 1s ease;
+}
+
+a{
+  text-decoration: none;
+  color: inherit;
+}
+
+.inicioItem:hover{
+  cursor: pointer;
+  transform: scale(110%);
+  filter: drop-shadow(1rem 1rem 10px #ff006e);
+}
