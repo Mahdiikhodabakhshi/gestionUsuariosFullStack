@@ -9,6 +9,7 @@ import {Content, PageableUser} from "../interfaces/PageableUser";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 import {faSortAlphaAsc} from "@fortawesome/free-solid-svg-icons/faSortAlphaAsc";
+import {faSortNumericAsc} from "@fortawesome/free-solid-svg-icons/faSortNumericAsc";
 
 @Component({
   selector: 'app-users',
@@ -19,7 +20,7 @@ export class UsersComponent {
 
   infoUsers !: Content[];
   page = 0;
-  size = 5;
+  size = 6;
 
   editar = false;
 
@@ -33,6 +34,15 @@ export class UsersComponent {
   roleFilter?:String ;
 
   itemIdToDelete?:number;
+
+  sortByNameIcon:Boolean = true;
+  sortByLastNameIcon:Boolean = false;
+  sortByIdIcon:Boolean = false;
+  sortByRoleIcon:Boolean = false;
+  sortByEmailIcon:Boolean = false;
+
+
+
 
   userForm : FormGroup = this.fb.group({
     id:[{value:undefined, disabled:true}],
@@ -207,6 +217,11 @@ export class UsersComponent {
 
   refreshPage() {
     this.loadUsers();
+    this.sortByNameIcon= true;
+    this.sortByLastNameIcon= false;
+    this.sortByIdIcon = false;
+    this.sortByRoleIcon = false;
+    this.sortByEmailIcon = false;
   }
 
   cleanSearch() {
@@ -215,5 +230,56 @@ export class UsersComponent {
     this.lastNameFilter = "";
   }
 
+  sortByName(){
+    this.loadUsers();
+
+    this.sortByNameIcon= true;
+    this.sortByLastNameIcon= false;
+    this.sortByIdIcon = false;
+    this.sortByRoleIcon = false;
+    this.sortByEmailIcon = false;
+
+  }
+  sortByLastName(){
+    this.infoUsers = this.infoUsers.sort((a, b) => a.lastName.localeCompare(b.lastName));
+
+    this.sortByNameIcon= false;
+    this.sortByLastNameIcon= true;
+    this.sortByIdIcon = false;
+    this.sortByRoleIcon = false;
+    this.sortByEmailIcon = false;
+
+  }
+
+  sortById(){
+    this.infoUsers = this.infoUsers.sort((a, b) => a.id - b.id);
+
+    this.sortByNameIcon= false;
+    this.sortByLastNameIcon= false;
+    this.sortByIdIcon = true;
+    this.sortByRoleIcon = false;
+    this.sortByEmailIcon = false;
+
+  }
+
+  sortByRole(){
+    this.infoUsers = this.infoUsers.sort((a, b) => a.userType.localeCompare(b.userType));
+    this.sortByNameIcon= false;
+    this.sortByLastNameIcon= false;
+    this.sortByIdIcon = false;
+    this.sortByRoleIcon = true;
+    this.sortByEmailIcon = false;
+
+  }
+  sortByEmail(){
+    this.infoUsers = this.infoUsers.sort((a, b) => a.email.localeCompare(b.email));
+    this.sortByNameIcon= false;
+    this.sortByLastNameIcon= false;
+    this.sortByIdIcon = false;
+    this.sortByRoleIcon = false;
+    this.sortByEmailIcon = true;
+  }
+
   protected readonly faSortAlphaAsc = faSortAlphaAsc;
+  protected readonly faSortNumericAsc = faSortNumericAsc;
 }

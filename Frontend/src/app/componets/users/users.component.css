@@ -189,8 +189,14 @@
   border-radius: 50%;
 }
 
-
-
+.sortHover{
+  transition: all 0.5s ease;
+}
+.sortHover:hover{
+  transform: scale(120%);
+  color: #fcbf49 !important;
+  cursor: pointer;
+}
 
 
 
