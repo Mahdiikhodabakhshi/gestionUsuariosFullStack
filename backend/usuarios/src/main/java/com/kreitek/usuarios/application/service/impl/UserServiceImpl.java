@@ -7,7 +7,9 @@ import com.kreitek.usuarios.domain.entity.User;
 import com.kreitek.usuarios.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,6 +57,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserDTO> findUsersByCreteriaStringPage(Pageable pageable, String filter) {
+
+        Sort sort = Sort.by(Sort.Direction.ASC, "name");
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        System.out.println(pageable);
         Page<User> userPage = userRepository.findAll(pageable,filter);
         return userPage.map(userMapper::toDto);
     }

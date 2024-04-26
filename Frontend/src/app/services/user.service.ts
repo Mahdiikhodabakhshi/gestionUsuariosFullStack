@@ -20,8 +20,8 @@ export class UserService {
   getOneUser(id: number): Observable<UserInterface> {
     return this.http.get<UserInterface>(`${this.URL}/users/${id}`)
   }
-  getUsers(page:number , size:number , sort:string , filters?:string):Observable<PageableUser>{
-    let urlGetUsers = this.URL+"/users?page="+page+"&size="+size+"&sort="+sort
+  getUsers(page:number , size:number , filters?:string):Observable<PageableUser>{
+    let urlGetUsers = this.URL+"/users?page="+page+"&size="+size
     if (filters){
       urlGetUsers = urlGetUsers + "&filter="+filters
     }

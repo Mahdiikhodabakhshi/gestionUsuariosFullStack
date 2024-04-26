@@ -8,6 +8,7 @@ import {faAdd} from "@fortawesome/free-solid-svg-icons/faAdd";
 import {Content, PageableUser} from "../interfaces/PageableUser";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
+import {faSortAlphaAsc} from "@fortawesome/free-solid-svg-icons/faSortAlphaAsc";
 
 @Component({
   selector: 'app-users',
@@ -19,7 +20,7 @@ export class UsersComponent {
   infoUsers !: Content[];
   page = 0;
   size = 5;
-  sort:string = "name,asc";
+
   editar = false;
 
   first:Boolean = false;
@@ -68,7 +69,7 @@ export class UsersComponent {
     const filters:string | undefined = this.buildFilters();
 
 
-    this.userService.getUsers(this.page,this.size,this.sort , filters).subscribe({
+    this.userService.getUsers(this.page,this.size, filters).subscribe({
       next: data => {
         this.infoUsers = data.content;
         this.first = data.first;
@@ -103,9 +104,7 @@ export class UsersComponent {
 
   searchByFilters() {
     this.loadUsers();
-    this.roleFilter = "";
-    this.nameFilter = "";
-    this.lastNameFilter = "";
+
   }
 
   private buildFilters():string|undefined {
@@ -209,4 +208,12 @@ export class UsersComponent {
   refreshPage() {
     this.loadUsers();
   }
+
+  cleanSearch() {
+    this.roleFilter = "";
+    this.nameFilter = "";
+    this.lastNameFilter = "";
+  }
+
+  protected readonly faSortAlphaAsc = faSortAlphaAsc;
 }
